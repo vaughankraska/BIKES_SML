@@ -29,5 +29,5 @@ The repository is organized as follows:
 To get started with the project, follow these steps:
 **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/washington-dc-bike-analysis.git
-   cd washington-dc-bike-analysis
+   git clone https://github.com/vaughankraska/BIKES_SML.git
+
