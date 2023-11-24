@@ -32,8 +32,9 @@ To get started with the project, follow these steps:
    ```bash
    git clone https://github.com/vaughankraska/BIKES_SML.git
    ```
+**Pull before you push!!!**
+   
 ## The data
-**Features**
    ```
 | Feature         | Description                                                                      |
 |-----------------|----------------------------------------------------------------------            |
