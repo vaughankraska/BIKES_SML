@@ -4,10 +4,8 @@ Created on Mon Nov 27 10:53:50 2023
 
 @author: ANAND
 """
-
 import pandas as pd
-from pandas.plotting import scatter_matrix
-
+from src.utils import create_weather_score
 data = pd.read_csv('../data/training_data.csv')
 
 data_copy = data.copy()
@@ -25,17 +23,26 @@ Time of day
 7-19: morning
 otherwise: night
 '''
-data_copy["daytime"] = data_copy.hour_of_day.apply(lambda h: 1 if h in range(7, 20) else 0).astype('category')
+data_copy["daytime"] = data_copy.hour_of_day.apply(lambda h: 1 if h in range(7, 20) else 0)
 
 '''
 Rushhour
 15-19: rush
 otherwise: no rush
 '''
-data_copy["rushhour"] = data_copy.hour_of_day.apply(lambda h: 1 if h in range(15, 20) else 0).astype('category')
+data_copy["rushhour"] = data_copy.hour_of_day.apply(lambda h: 1 if h in range(15, 20) else 0)
 
 '''
-Need a good weather variable
-
-Finn inputs pending...
+weather_score
+f(summertime,temp,dew,humidity,precip,snowdepth,windspeed,cloudcover,visibility)
+bikability score between ~ [-.17, .74] where higher values are more bikeable weather
 '''
+data_copy['weather_score'] = create_weather_score(
+    data_copy[['summertime','temp','dew','humidity','precip','snowdepth','windspeed','cloudcover','visibility']]
+)
+
+'''
+weather_score_daytime
+weather_score * daytime (interaction variable of daytime and weather)
+'''
+data_copy['weather_score_daytime'] = data_copy['weather_score'] * data_copy['daytime']
