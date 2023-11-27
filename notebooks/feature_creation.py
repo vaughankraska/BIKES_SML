@@ -17,7 +17,6 @@ data_copy["day_of_week"] = data_copy["day_of_week"].astype('category')
 data_copy["hour_of_day"] = data_copy["hour_of_day"].astype('category')
 data_copy["holiday"] = data_copy["holiday"].astype('category')
 data_copy["weekday"] = data_copy["weekday"].astype('category')
-data_copy["summertime"] = data_copy["summertime"].astype('category')
 data_copy["increase_stock"] = data_copy["increase_stock"].astype('category')
 
 data_copy = data_copy.drop(columns=["snow"])
