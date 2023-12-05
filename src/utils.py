@@ -62,12 +62,11 @@ def initialize_model_pipeline(sklearn_model):
     return model_pipline
 
 
-def cross_validate_model(pipeline, X, y, n_splits=5, scoring='accuracy'):
+def cross_validate_model(pipeline, X, y, n_splits=5, scoring='accuracy', cpu_count=1):
     from sklearn.model_selection import cross_val_score, KFold
-    from os import cpu_count
 
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=123)
-    cvs = cross_val_score(pipeline, X, y, cv=kf, scoring='accuracy', n_jobs=cpu_count())
+    cvs = cross_val_score(pipeline, X, y, cv=kf, scoring='accuracy', n_jobs=cpu_count)
 
     return cvs
 
