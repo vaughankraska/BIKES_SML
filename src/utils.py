@@ -52,7 +52,7 @@ def initialize_model_pipeline(sklearn_model):
         ('bin', 'passthrough', ['weekday', 'summertime']),
         ('weather', WeatherTransformer(), ['summertime', 'temp', 'dew', 'humidity', 'precip',
                                            'snowdepth', 'windspeed', 'cloudcover', 'visibility'])
-    ], remainder='drop')
+    ], remainder='drop', sparse_threshold=0)
 
     model_pipline = Pipeline([
         ('pre', pre),
