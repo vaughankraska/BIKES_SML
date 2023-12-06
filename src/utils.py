@@ -52,7 +52,7 @@ def initialize_model_pipeline(sklearn_model):
         ('bin', 'passthrough', ['weekday', 'summertime']),
         ('weather', WeatherTransformer(), ['summertime', 'temp', 'dew', 'humidity', 'precip',
                                            'snowdepth', 'windspeed', 'cloudcover', 'visibility'])
-    ], remainder='drop')
+    ], remainder='drop', sparse_threshold=0)
 
     model_pipline = Pipeline([
         ('pre', pre),
@@ -66,7 +66,7 @@ def cross_validate_model(pipeline, X, y, n_splits=5, scoring='accuracy', cpu_cou
     from sklearn.model_selection import cross_val_score, KFold
 
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=123)
-    cvs = cross_val_score(pipeline, X, y, cv=kf, scoring='accuracy', n_jobs=cpu_count)
+    cvs = cross_val_score(pipeline, X, y, cv=kf, scoring=scoring, n_jobs=cpu_count)
 
     return cvs
 
