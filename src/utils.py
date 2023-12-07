@@ -2,7 +2,7 @@
 
 # Function to create a weather score from a row of a DataFrame
 def create_weather_score(df_row):
-    import numpy as np  
+    import numpy as np
 
     # Coefficients for the linear regression model
     b0 = -0.8138192466580598  # Intercept term
@@ -22,7 +22,7 @@ def create_weather_score(df_row):
 
 # Function to load and preprocess data
 def load_data():
-    import pandas as pd  
+    import pandas as pd
 
     # Reads the training data into a pandas DataFrame
     data = pd.read_csv('../data/training_data.csv')
@@ -34,11 +34,11 @@ def load_data():
 
 # Function to initialize a model pipeline
 def initialize_model_pipeline(sklearn_model):
-    from sklearn.preprocessing import OneHotEncoder  
-    from WeatherScaler import WeatherTransformer  
-    from Generator import Generator  
-    from sklearn.compose import ColumnTransformer  
-    from sklearn.pipeline import Pipeline  
+    from sklearn.preprocessing import OneHotEncoder
+    from WeatherScaler import WeatherTransformer
+    from Generator import Generator
+    from sklearn.compose import ColumnTransformer
+    from sklearn.pipeline import Pipeline
 
     # Defining a column transformer for preprocessing
     pre = ColumnTransformer([
@@ -59,7 +59,7 @@ def initialize_model_pipeline(sklearn_model):
 
 # Function to perform cross-validation on a model pipeline
 def cross_validate_model(pipeline, X, y, n_splits=5, scoring='accuracy', cpu_count=1):
-    from sklearn.model_selection import cross_val_score, KFold  
+    from sklearn.model_selection import cross_val_score, KFold
 
     # Setting up KFold for cross-validation
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=123)
@@ -70,16 +70,47 @@ def cross_validate_model(pipeline, X, y, n_splits=5, scoring='accuracy', cpu_cou
 
 # Function to perform bootstrap analysis on a model pipeline
 def bootstrap_model(pipeline, X, y, num_bs=100):
-    from sklearn.model_selection import train_test_split  # For splitting data
-    from pandas import DataFrame  # For DataFrame handling
+    from sklearn.model_selection import train_test_split
+    from numpy import ravel
+    from sklearn.metrics import accuracy_score, classification_report
+    from pandas import DataFrame
 
-    X = DataFrame(X)  # Ensuring X is a DataFrame
-    y = DataFrame(y)  # Ensuring y is a DataFrame
-    results = []  # List to store results of each bootstrap iteration
+    X = DataFrame(X)
+    y = ravel(y)
+    results = []
     for _ in range(num_bs):
-        result = {}  # Dictionary to store results of current iteration
-        # Sampling with replacement to create a bootstrap sample
-        X_bs = X.sample(frac=1, replace=True, random_state=_)
-        y_bs = y.loc[X_bs.index]
-        pipeline.fit(X_bs, y
+        result = {}
+        x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=1/16, random_state=_)
+        pipeline.fit(x_train, y_train)
 
+        result['accuracy'] = accuracy_score(y_test, pipeline.predict(x_test))
+        result['optimistic_accuracy'] = accuracy_score(y_train, pipeline.predict(x_train))
+        result['class_report'] = classification_report(y_test, pipeline.predict(x_test))
+        result['model'] = pipeline
+        results.append(result)
+
+    return DataFrame(results)
+
+def get_linear_CI(arraylike):
+    from numpy import percentile
+    # noinspection PyArgumentList
+    quantile_5 = percentile(arraylike, 5, interpolation="linear")
+    # noinspection PyArgumentList
+    quantile_95 = percentile(arraylike, 95, interpolation="linear")
+    return [quantile_5, quantile_95]
+
+def parse_classification_report(report_str):
+    from re import findall
+    lines = report_str.strip().split('\n')
+
+    # Extract macro-average scores
+    macro_avg_line = lines[-2]
+    macro_avg_scores = findall(r'\d+\.\d+|\d+', macro_avg_line)
+    temp = {
+        'precision': float(macro_avg_scores[0]),
+        'recall': float(macro_avg_scores[1]),
+        'f1-score': float(macro_avg_scores[2]),
+        'support': int(macro_avg_scores[3])
+    }
+
+    return float(macro_avg_scores[2])
