@@ -23,6 +23,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_s
 weather_model = LinearRegression()
 weather_model.fit(X_train, y_train)
 
-#
+# Intercept and coefficients are used to create the variable wather_score
 print(weather_model.intercept_)
 print(weather_model.coef_)
