@@ -93,10 +93,8 @@ def bootstrap_model(pipeline, X, y, num_bs=100):
 
 def get_linear_CI(arraylike):
     from numpy import percentile
-    # noinspection PyArgumentList
-    quantile_5 = percentile(arraylike, 5, interpolation="linear")
-    # noinspection PyArgumentList
-    quantile_95 = percentile(arraylike, 95, interpolation="linear")
+    quantile_5 = percentile(arraylike, 5, method="linear")
+    quantile_95 = percentile(arraylike, 95, method="linear")
     return [quantile_5, quantile_95]
 
 def parse_classification_report(report_str):
