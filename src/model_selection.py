@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score
+from sklearn.model_selection import train_test_split
 
 import utils as utils
 
@@ -11,29 +11,29 @@ OG_data = utils.load_data()
 maf = 'macro_average_f1'  # col name for f1 macro avg score
 # load saved bootstrapped model results
 results_xg = pd.read_pickle('../data/xg_boost_optimal_results.pkl')
-results_xg[maf] = results_xg['class_report'].apply(utils.parse_classification_report)
+results_xg[maf] = results_xg['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 results_ada = pd.read_pickle('../data/ada_optimal_results.pkl')
-results_ada[maf] = results_ada['class_report'].apply(utils.parse_classification_report)
+results_ada[maf] = results_ada['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 results_knn = pd.read_pickle('../data/knn_optimal_results.pkl')
-results_knn[maf] = results_knn['class_report'].apply(utils.parse_classification_report)
+results_knn[maf] = results_knn['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 results_forest = pd.read_pickle('../data/forest_optimal_results.pkl')
-results_forest[maf] = results_forest['class_report'].apply(utils.parse_classification_report)
+results_forest[maf] = results_forest['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 # get equivalent bootstrapped dataframes for non parametric models
 log = utils.initialize_model_pipeline(LogisticRegression())
 results_log = utils.bootstrap_model(log, OG_data, OG_data['increase_stock'])
-results_log[maf] = results_log['class_report'].apply(utils.parse_classification_report)
+results_log[maf] = results_log['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 qda = utils.initialize_model_pipeline(QuadraticDiscriminantAnalysis())
 results_qda = utils.bootstrap_model(qda, OG_data, OG_data['increase_stock'])
-results_qda[maf] = results_qda['class_report'].apply(utils.parse_classification_report)
+results_qda[maf] = results_qda['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 lda = utils.initialize_model_pipeline(LinearDiscriminantAnalysis())
 results_lda = utils.bootstrap_model(lda, OG_data, OG_data['increase_stock'])
-results_lda[maf] = results_lda['class_report'].apply(utils.parse_classification_report)
+results_lda[maf] = results_lda['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
 # do naive model (always choose low bike demand)
 results_naive = []

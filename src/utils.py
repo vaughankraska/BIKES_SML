@@ -115,8 +115,9 @@ def get_linear_CI(arraylike):
     quantile_95 = percentile(arraylike, 95, method="linear")
     return [quantile_5, quantile_95]
 
+
 # Function to parse a classification report into a summary metric
-def parse_classification_report(report_str):
+def parse_classification_report(report_str, target_stat='f1-score', target_row='macro_avg', extract_dict=False):
     from re import findall
     # Splitting the report string into lines
     lines = report_str.strip().split('\n')
@@ -124,11 +125,41 @@ def parse_classification_report(report_str):
     # Extracting macro-average scores from the second-to-last line
     macro_avg_line = lines[-2]
     macro_avg_scores = findall(r'\d+\.\d+|\d+', macro_avg_line)
-    temp = {
+    macro_avg_dict = {
         'precision': float(macro_avg_scores[0]),
         'recall': float(macro_avg_scores[1]),
         'f1-score': float(macro_avg_scores[2]),
         'support': int(macro_avg_scores[3])
     }
-
-    return float(macro_avg_scores[2])  # Returning the F1-score as a summary metric
+    # Extract categorical (0 and 1) lines from report
+    zero_line = lines[-6]
+    zero_line_scores = findall(r'\d+\.\d+|\d+', zero_line)
+    zero_line_dict = {
+        'precision': float(zero_line_scores[-4]),
+        'recall': float(zero_line_scores[-3]),
+        'f1-score': float(zero_line_scores[-2]),
+        'support': int(zero_line_scores[-1]),
+    }
+    one_line = lines[-5]
+    one_line_scores = findall(r'\d+\.\d+|\d+', one_line)
+    one_line_dict = {
+        'precision': float(one_line_scores[-4]),
+        'recall': float(one_line_scores[-3]),
+        'f1-score': float(one_line_scores[-2]),
+        'support': int(one_line_scores[-1]),
+    }
+    # return the desired stat
+    if extract_dict == True:
+        if target_row == 'zero':
+            return zero_line_dict
+        elif target_row == 'one':
+            return one_line_dict
+        else:
+            return macro_avg_dict
+    else:
+        if target_row == 'zero':
+            return zero_line_dict[target_stat]
+        elif target_row == 'one':
+            return one_line_dict[target_stat]
+        else:
+            return macro_avg_dict[target_stat]
