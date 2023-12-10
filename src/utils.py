@@ -131,6 +131,16 @@ def parse_classification_report(report_str, target_stat='f1-score', target_row='
         'f1-score': float(macro_avg_scores[2]),
         'support': int(macro_avg_scores[3])
     }
+    # Extracting weighted-average scores from the second-to-last line
+    weighted_avg_line = lines[-1]
+    weighted_avg_scores = findall(r'\d+\.\d+|\d+', weighted_avg_line)
+    weighted_avg_dict = {
+        'precision': float(weighted_avg_scores[0]),
+        'recall': float(weighted_avg_scores[1]),
+        'f1-score': float(weighted_avg_scores[2]),
+        'support': int(weighted_avg_scores[3])
+    }
+
     # Extract categorical (0 and 1) lines from report
     zero_line = lines[-6]
     zero_line_scores = findall(r'\d+\.\d+|\d+', zero_line)
@@ -154,6 +164,8 @@ def parse_classification_report(report_str, target_stat='f1-score', target_row='
             return zero_line_dict
         elif target_row == 'one':
             return one_line_dict
+        elif target_row == 'weighted':
+            return weighted_avg_dict
         else:
             return macro_avg_dict
     else:
@@ -161,5 +173,7 @@ def parse_classification_report(report_str, target_stat='f1-score', target_row='
             return zero_line_dict[target_stat]
         elif target_row == 'one':
             return one_line_dict[target_stat]
+        elif target_row == 'weighted':
+            return weighted_avg_dict[target_stat]
         else:
             return macro_avg_dict[target_stat]

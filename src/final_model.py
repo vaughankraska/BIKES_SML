@@ -7,7 +7,7 @@ import utils as utils
 # load saved bootstrapped model results
 results_xg = pd.read_pickle('../data/xg_boost_optimal_results.pkl')
 # extract extra stats from classification report
-single_class_report = results_xg['class_report'].loc[0]
+single_class_report = results_xg['class_report'].loc[3]
 keys = utils.parse_classification_report(single_class_report,
                                          target_row='macro_avg',
                                          extract_dict=True).keys()
@@ -17,9 +17,10 @@ for key in keys:
     results_xg[key + '_macro'] = results_xg['class_report'].apply(get_value, tr='macro_avg')
     results_xg[key + '_0'] = results_xg['class_report'].apply(get_value, tr='zero')
     results_xg[key + '_1'] = results_xg['class_report'].apply(get_value, tr='one')
-print(single_class_report)
+    results_xg[key + '_weighted'] = results_xg['class_report'].apply(get_value, tr='weighted')
+
 print(results_xg.drop(['optimistic_accuracy', 'class_report', 'best_params', 'model'], axis=1).columns.tolist())
-# show more detailed report of
+# show more detailed report of scores
 print('########SUMMARY')
 print('Low bike demand (0):')
 print(f'precision: mew={np.round(np.mean(results_xg["precision_0"]),3)}, '
@@ -50,5 +51,14 @@ print(f'F1: mew={np.round(np.mean(results_xg["f1-score_macro"]),3)}, '
       f'{utils.get_linear_CI(results_xg["f1-score_macro"])}')
 print(f'support: mew={np.round(np.mean(results_xg["support_macro"]),3)}, '
       f'{utils.get_linear_CI(results_xg["support_macro"])}')
+print('\nWeighted:')
+print(f'precision: mew={np.round(np.mean(results_xg["precision_weighted"]),3)}, '
+      f'{utils.get_linear_CI(results_xg["precision_weighted"])}')
+print(f'recall: mew={np.round(np.mean(results_xg["recall_weighted"]),3)}, '
+      f'{utils.get_linear_CI(results_xg["recall_weighted"])}')
+print(f'F1: mew={np.round(np.mean(results_xg["f1-score_weighted"]),3)}, '
+      f'{utils.get_linear_CI(results_xg["f1-score_weighted"])}')
+print(f'support: mew={np.round(np.mean(results_xg["support_weighted"]),3)}, '
+      f'{utils.get_linear_CI(results_xg["support_weighted"])}')
 
 
