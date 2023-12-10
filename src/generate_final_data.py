@@ -9,4 +9,4 @@ final_pipeline.fit(X=raw_data_with_encoded_y, y=raw_data_with_encoded_y['increas
 final_data = pd.DataFrame(final_pipeline.transform(X=raw_data_with_encoded_y),
                           columns=final_pipeline[:-1].get_feature_names_out())
 final_data['increase_stock'] = raw_data_with_encoded_y['increase_stock']
-final_data.to_csv('./final.csv', index=False)
+final_data.to_csv('../data/final.csv', index=False)

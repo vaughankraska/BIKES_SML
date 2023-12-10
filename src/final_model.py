@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-
 import utils as utils
 
 # XGBoost is the selected final model
