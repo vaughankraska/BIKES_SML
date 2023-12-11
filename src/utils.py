@@ -35,8 +35,8 @@ def load_data():
 # Function to initialize the model pipeline
 def initialize_model_pipeline(sklearn_model):
     from sklearn.preprocessing import OneHotEncoder
-    from WeatherScaler import WeatherTransformer
-    from Generator import Generator
+    from src.WeatherScaler import WeatherTransformer
+    from src.Generator import Generator
     from sklearn.compose import ColumnTransformer
     from sklearn.pipeline import Pipeline
 
