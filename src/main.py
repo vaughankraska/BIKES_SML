@@ -16,17 +16,23 @@ def final_model_predict(use_cached_model=True):
             final_model = load(file)
 
         predictions = final_model.predict(new_data)
-        DataFrame(predictions).to_csv('./predictions.csv')
+        DataFrame(predictions).to_csv('./predictions.csv', index=False,
+                                      sep=',',
+                                      header=False,
+                                      lineterminator=',')
         return predictions
     else:
         final_model = generate_final_model_and_print_error_estimates()
         predictions = final_model.predict(new_data)
-        DataFrame(predictions).to_csv(f'./predictions{datetime.datetime.now()}.csv')
+        DataFrame(predictions).to_csv(f'./predictions{datetime.datetime.now()}.csv', index=False,
+                                      sep=',',
+                                      header=False,
+                                      lineterminator=',')
         return predictions
 
 
-# Run main function
-final_predictions = final_model_predict(use_cached_model=False)
+# Run main function which generates predictions of newest 400 data
+final_predictions = final_model_predict(use_cached_model=True)
 print('Final Predictions Summary:')
 print(f'Len: {len(final_predictions)}, avg: {np.mean(final_predictions)}')
 
