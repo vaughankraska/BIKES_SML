@@ -9,14 +9,14 @@ def final_model_predict(use_cached_model=True):
     from pandas import read_csv, DataFrame
     from src.final_model import generate_final_model_and_print_error_estimates
 
-    new_data = read_csv('./test_data.csv')  # read test holdout data
+    new_data = read_csv('store/test_data.csv')  # read test holdout data
 
     if use_cached_model:  # use cached model to avoid longer runtime
-        with open('./final_model.pkl', 'rb') as file:
+        with open('store/final_model.pkl', 'rb') as file:
             final_model = load(file)
 
         predictions = final_model.predict(new_data)
-        DataFrame(predictions).to_csv('./predictions.csv', index=False,
+        DataFrame(predictions).to_csv('store/predictions.csv', index=False,
                                       sep=',',
                                       header=False,
                                       lineterminator=',')
@@ -24,7 +24,7 @@ def final_model_predict(use_cached_model=True):
     else:
         final_model = generate_final_model_and_print_error_estimates()
         predictions = final_model.predict(new_data)
-        DataFrame(predictions).to_csv(f'./predictions{datetime.datetime.now()}.csv', index=False,
+        DataFrame(predictions).to_csv(f'./store/predictions{datetime.datetime.now()}.csv', index=False,
                                       sep=',',
                                       header=False,
                                       lineterminator=',')
