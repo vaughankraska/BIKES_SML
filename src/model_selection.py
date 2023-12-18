@@ -1,29 +1,30 @@
-# model_selection.py 
-
-import numpy as np
-import pandas as pd
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import train_test_split
-
-import utils as utils
-
-
+# model_selection.py
 def run_model_selection(use_cached_results=True):  # function to choose runtime of model selection criteria
+    import numpy as np
+    import pandas as pd
+    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.metrics import accuracy_score, f1_score
+    from sklearn.model_selection import train_test_split
+    import utils as utils
+    from src.optimal_xgboost import optimal_xgboost
+    from src.optimal_adaboost import optimal_adaboost
+    from src.optimal_knn import optimal_knn
+    from src.optimal_forest import optimal_forest
+
     og_data = utils.load_data()
     maf = 'macro_average_f1'  # col name for f1 macro avg score
     # load saved bootstrapped model results
-    results_xg = pd.read_pickle('./store/xg_boost_optimal_results.pkl')
+    results_xg = pd.read_pickle('./store/xg_boost_optimal_results.pkl') if use_cached_results else optimal_xgboost()
     results_xg[maf] = results_xg['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
-    results_ada = pd.read_pickle('./store/ada_optimal_results.pkl')
+    results_ada = pd.read_pickle('./store/ada_optimal_results.pkl') if use_cached_results else optimal_adaboost()
     results_ada[maf] = results_ada['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
-    results_knn = pd.read_pickle('./store/knn_optimal_results.pkl')
+    results_knn = pd.read_pickle('./store/knn_optimal_results.pkl') if use_cached_results else optimal_knn()
     results_knn[maf] = results_knn['class_report'].apply(utils.parse_classification_report, target_stat='f1-score')
 
-    results_forest = pd.read_pickle('./store/forest_optimal_results.pkl')
+    results_forest = pd.read_pickle('./store/forest_optimal_results.pkl') if use_cached_results else optimal_forest()
     results_forest[maf] = results_forest['class_report'].apply(utils.parse_classification_report,
                                                                target_stat='f1-score')
 
@@ -51,7 +52,7 @@ def run_model_selection(use_cached_results=True):  # function to choose runtime 
 
     # do naive model (always choose low bike demand)
     results_naive = []
-    for i in range(1000):
+    for i in range(1000): # do 1000 instead of 100 because it's a really cheap bootstrap
         r = {}
         x_train, x_test, y_train, y_test = train_test_split(
             og_data.drop('increase_stock', axis=1),

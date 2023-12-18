@@ -25,7 +25,7 @@ def load_data():
     import pandas as pd
 
     # Reads the training data into a pandas DataFrame
-    data = pd.read_csv('../data/training_data.csv')
+    data = pd.read_csv('./store/training_data.csv')
     # Creating a copy of the DataFrame
     data = data.copy()
     # Transforming 'increase_stock' column based on a condition

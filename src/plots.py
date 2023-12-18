@@ -1,11 +1,11 @@
 # plots.py
 
-import seaborn as sns
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
+import seaborn as sns
 
-data = pd.read_csv('../data/training_data.csv')
+data = pd.read_csv('./store/training_data.csv')
 
 # create bar plot of proportion of high demand by month
 data_time = data[["month", "hour_of_day", "day_of_week", "increase_stock"]]
@@ -27,7 +27,7 @@ df_hour["perc_stock"] = df_hour["count_stock"] / df_hour["count_hour"]
 _ = sns.barplot(data=df_hour, x="hour_of_day", y="perc_stock", hue="increase_stock", palette='viridis')
 
 # create corr matrix heat map (reset data load to get weather vars as proper types)
-data = pd.read_csv('../data/training_data.csv')
+data = pd.read_csv('./store/training_data.csv')
 data['increase_stock'] = data['increase_stock'].astype('category')
 data['month'] = data['month'].astype('category')
 data['hour_of_day'] = data['hour_of_day'].astype('category')
@@ -68,7 +68,7 @@ plt.figure(figsize=(16,2))
 sns.violinplot(data=data_violin,x='hour_of_day',y='temp', hue='is_high_demand', palette='viridis', linewidth=.2)
 
 # Create plot for accuracy dist of
-xg_results = pd.read_pickle('../data/xg_boost_optimal_results.pkl')
+xg_results = pd.read_pickle('./store/xg_boost_optimal_results.pkl')
 from seaborn import histplot
 histplot(data=xg_results[['accuracy']], kde=True, palette='viridis')
 plt.xlabel('Accuracy distribution')

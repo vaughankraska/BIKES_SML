@@ -1,10 +1,9 @@
 # main.py
-import datetime
-
 import numpy as np
 
 
 def final_model_predict(use_cached_model=True):
+    import datetime
     from pickle import load
     from pandas import read_csv, DataFrame
     from src.final_model import generate_final_model_and_print_error_estimates

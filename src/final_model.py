@@ -10,7 +10,7 @@ def generate_final_model_and_print_error_estimates():
 
     # XGBoost is the selected final model
     # load saved bootstrapped model results
-    results_xg = pd.read_pickle('../data/xg_boost_optimal_results.pkl')
+    results_xg = pd.read_pickle('./store/xg_boost_optimal_results.pkl')
     # extract extra stats from classification report
     single_class_report = results_xg['class_report'].loc[3]
     keys = utils.parse_classification_report(single_class_report,

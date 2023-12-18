@@ -1,13 +1,12 @@
 # weather_score_creation.py
 
-import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 # Load training data 
-data = pd.read_csv(r"../data/training_data.csv")
+data = pd.read_csv(r"./store/training_data.csv")
 # Remove the 'snow' column as it contains no useful information.
 data = data.drop('snow', axis=1) 
 # Create a new binary column 'is_high_demand' based on the 'increase_stock' column values.
