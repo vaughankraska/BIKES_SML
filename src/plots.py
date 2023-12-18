@@ -26,6 +26,12 @@ df_hour = df_hour.rename(columns={"day_of_week": "count_stock", "count": "count_
 df_hour["perc_stock"] = df_hour["count_stock"] / df_hour["count_hour"]
 _ = sns.barplot(data=df_hour, x="hour_of_day", y="perc_stock", hue="increase_stock", palette='viridis')
 
+# Create bar plot of percentage of high/low demand by is holiday
+data_holiday = data[['holiday','increase_stock']].groupby('holiday')['increase_stock'].value_counts(normalize=True).reset_index(name='proportion')
+sns.barplot(data=data_holiday, x='holiday', y='proportion', hue='increase_stock', palette='viridis')
+plt.xlabel('Holiday (1=True, 0=False)')
+plt.ylabel('Percentage of Category')
+
 # create corr matrix heat map (reset data load to get weather vars as proper types)
 data = pd.read_csv('./store/training_data.csv')
 data['increase_stock'] = data['increase_stock'].astype('category')
